@@ -58,15 +58,16 @@
 
 <script>
 let i = 0;
+let answers = {}; // store her choices
 
 const slides = [
   { bg:"#0f172a", text:`Hey.<br><br>This isn’t a website trying to impress you. This is just me… slowing down for a second, because you matter enough to deserve that.` },
 
   { bg:"#1e293b", text:`Before anything else, I want you to know this: none of this is random. You didn’t just “end up” here. You’re here because you changed something in me.` },
 
-  { bg:"#020617", text:`Let me ask you something simple first.` , choices:["I’m listening","Go on"]},
+  { bg:"#020617", text:`Let me ask you something simple first.`, choices:["I’m listening","Go on"] },
 
-  { bg:"#111827", text:`Do you ever realize how easily you make things feel calmer? Like… even on loud days, you somehow soften the noise.` , choices:["Yes","I never noticed"]},
+  { bg:"#111827", text:`Do you ever realize how easily you make things feel calmer? Like… even on loud days, you somehow soften the noise.`, choices:["Yes","I never noticed"] },
 
   { bg:"#1f2937", text:`You don’t have to notice it. I do. And I carry it quietly.` },
 
@@ -74,7 +75,7 @@ const slides = [
 
   { bg:"#312e81", text:`Sometimes I imagine our future — not the flashy parts — but the boring, safe, peaceful ones. Mornings. Arguments that end in understanding. Silence that doesn’t feel empty.` },
 
-  { bg:"#1e1b4b", text:`Quick check 🐱` , choices:["I like cats","I am the cat"]},
+  { bg:"#1e1b4b", text:`Quick check 🐱`, choices:["I like cats","I am the cat"] },
 
   { bg:"#0f172a", text:`Correct answer accepted. No further questions.` },
 
@@ -84,7 +85,7 @@ const slides = [
 
   { bg:"#1f2937", text:`If one day you ever wonder whether you’re “too much”… I need you to remember this moment. You’re not too much. You’re exactly right.` },
 
-  { bg:"#0b132b", text:`Tell me honestly.` , choices:["You matter to me","I already knew that"]},
+  { bg:"#0b132b", text:`Tell me honestly.`, choices:["You matter to me","I already knew that"] },
 
   { bg:"#312e81", text:`Good. Because I wasn’t planning to stop proving it anyway.` },
 
@@ -94,9 +95,9 @@ const slides = [
 
   { bg:"#1f2937", text:`If love had a weight, this is where I carry it — not in words I show off, but in choices I repeat.` },
 
-  { bg:"#0f172a", text:`Another honest question.` , choices:["Okay","You ask a lot"]},
+  { bg:"#0f172a", text:`Another honest question.`, choices:["Okay","You ask a lot"] },
 
-  { bg:"#020617", text:`Do you feel safe here?` , choices:["Yes","I’m starting to"]},
+  { bg:"#020617", text:`Do you feel safe here?`, choices:["Yes","I’m starting to"] },
 
   { bg:"#1e293b", text:`That’s all I ever wanted this to feel like.` },
 
@@ -106,7 +107,7 @@ const slides = [
 
   { bg:"#0b132b", text:`I want to keep building something with you. Slowly. Honestly. Intentionally.` },
 
-  { bg:"#020617", text:`Will you stay with me and keep choosing this too?` , choices:["Yes","I’m already here"]},
+  { bg:"#020617", text:`Will you stay with me and keep choosing this too?`, choices:["Yes","I’m already here"] },
 
   { bg:"#000000", text:`Good. Then let’s stop rushing life — and do this properly. Together.` }
 ];
@@ -114,15 +115,21 @@ const slides = [
 function render() {
   const s = slides[i];
   document.body.style.background = s.bg;
+
+  const hasChoices = !!s.choices;
+
   document.getElementById("app").innerHTML = `
-    <div class="screen">
+    <div class="screen" ${hasChoices ? "" : "onclick='next()'"} >
       <div class="text">${s.text}</div>
       <div>
-        ${s.choices ? `
+        ${hasChoices ? `
           <div class="choices">
-            ${s.choices.map(c=>`<button onclick="event.stopPropagation()">${c}</button>`).join("")}
-          </div>` : ""}
-        <div class="hint">tap anywhere</div>
+            ${s.choices.map(c =>
+              `<button onclick="choose('${c}')">${c}</button>`
+            ).join("")}
+          </div>
+        ` : ""}
+        <div class="hint">${hasChoices ? "choose an option" : "tap anywhere"}</div>
       </div>
     </div>
   `;
@@ -133,6 +140,11 @@ function next() {
     i++;
     render();
   }
+}
+
+function choose(answer) {
+  answers[i] = answer; // store answer
+  next();
 }
 
 render();
